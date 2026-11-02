@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_config_form" model="ir.ui.view">
+        <field name="name">mcp.feishu.config.form</field>
+        <field name="model">mcp.feishu.config</field>
+        <field name="arch" type="xml">
+            <form string="飞书与 OAuth" create="false" delete="false" class="o_mcp_feishu_config">
+                <header>
+                    <div class="o_mcp_setup_steps" role="group" aria-label="飞书 OAuth 配置步骤">
+                        <button name="action_check_credentials" type="object" string="检查应用凭证" class="o_mcp_setup_step o_mcp_setup_step_first">
+                            <span class="o_mcp_setup_number">1</span>
+                            <span>检查应用凭证</span>
+                            <span class="o_mcp_setup_complete" invisible="not credentials_fingerprint" aria-label="已完成">✓</span>
+                        </button>
+                        <span class="o_mcp_setup_step o_mcp_setup_pending" invisible="credentials_fingerprint" aria-disabled="true">
+                            <span class="o_mcp_setup_number">2</span><span>试用飞书登录</span>
+                        </span>
+                        <button name="action_trial_login" type="object" string="试用飞书登录" class="o_mcp_setup_step" invisible="not credentials_fingerprint">
+                            <span class="o_mcp_setup_number">2</span>
+                            <span>试用飞书登录</span>
+                            <span class="o_mcp_setup_complete" invisible="not login_fingerprint" aria-label="已完成">✓</span>
+                        </button>
+                    </div>
+                    <field name="can_enable_oauth" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="unconfigured,checked,login_ok,enabled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1>飞书与 OAuth</h1><p class="text-muted">系统管理员配置一次，员工以各自飞书身份授权连接。</p></div>
+                    <notebook>
+                        <page string="连接配置" name="connection">
+                            <group>
+                                <group string="飞书自建应用">
+                                    <field name="app_id" placeholder="cli_xxx"/>
+                                    <field name="secret_is_set" readonly="1"/>
+                                    <field name="app_secret" password="True" placeholder="填写新密钥；留空保留现有值"/>
+                                    <div class="text-muted" colspan="2">密钥加密保存，保存后不回显。</div>
+                                    <field name="credentials_checked_at" readonly="1"/>
+                                </group>
+                                <group string="连接地址">
+                                    <field name="public_base_url" placeholder="https://mcp.example.com"/>
+                                    <field name="callback_url" widget="CopyClipboardChar" readonly="1"/>
+                                    <div class="text-muted" colspan="2">请将回调地址登记到飞书应用的「安全设置」。</div>
+                                    <field name="mcp_url" widget="CopyClipboardChar" readonly="1"/>
+                                    <div class="text-muted" colspan="2">连接器使用 MCP OAuth 2.1；员工无需填写 MCP Key。</div>
+                                </group>
+                            </group>
+                            <group string="登录验证">
+                                <field name="pending_trial_user_id" readonly="1"/>
+                                <field name="pending_trial_at" readonly="1"/>
+                                <div class="o_mcp_setup_hint" colspan="2" invisible="not can_enable_oauth">
+                                    <span class="o_mcp_setup_info" aria-hidden="true">i</span>
+                                    <span>登录和邮箱权限已验证。</span>
+                                </div>
+                            </group>
+                            <group string="员工访问策略">
+                                <group>
+                                    <field name="enabled" widget="boolean_toggle" readonly="not can_enable_oauth and not enabled"/>
+                                    <div class="text-muted" colspan="2" invisible="can_enable_oauth">完成上方 2 个步骤后即可启用；已启用的服务可随时关闭。</div>
+                                    <field name="default_scope"/>
+                                    <field name="allow_write_scope"/>
+                                </group>
+                                <group>
+                                    <div colspan="2">员工登录时按邮箱唯一匹配并自动关联 Odoo 账号。管理员可在「用户绑定」中启用或停用访问。</div>
+                                    <div class="text-muted" colspan="2">自动关联不会开通员工的 MCP 使用权限；可在用户设置或绑定页点击「启用」开通。</div>
+                                    <div class="text-muted" colspan="2">实际权限同时受员工 Odoo 权限、OAuth Scope 和模型访问规则限制。</div>
+                                    <div class="text-muted" colspan="2">授权有效期由飞书自动管理；无法自动续期时，系统会提示重新登录。</div>
+                                </group>
+                            </group>
+                            <group string="兼容设置">
+                                <field name="allow_api_keys"/>
+                            </group>
+                            <field name="credentials_fingerprint" invisible="1"/>
+                            <field name="login_fingerprint" invisible="1"/>
+                        </page>
+                        <page string="用户绑定" name="bindings">
+                            <p class="text-muted">员工登录时按邮箱唯一匹配并自动关联账号。已关联的 Odoo 用户不会自动更换；没有匹配或存在重复邮箱时无法登录。停用后须点击「启用」恢复。</p>
+                            <field name="binding_ids" nolabel="1" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="email_normalized"/>
+                                    <field name="pending_email" string="最近登录邮箱" optional="show"/>
+                                    <field name="odoo_user_id"/>
+                                    <field name="conflict_reason"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="state" column_invisible="1"/>
+                                    <button name="action_enable" type="object" string="启用" invisible="status == 'enabled'"/>
+                                    <button name="action_disable" type="object" string="停用" invisible="state == 'blocked'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="授权记录" name="grants">
+                            <field name="grant_ids" nolabel="1" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="user_id" string="员工"/>
+                                    <field name="client_id" string="客户端"/>
+                                    <field name="scope" string="授权范围"/>
+                                    <field name="create_date" string="授权时间"/>
+                                    <field name="last_used" string="最近使用"/>
+                                    <field name="expires_at" string="到期时间"/>
+                                    <field name="revoked_at" string="撤销时间"/>
+                                    <button name="action_revoke" type="object" string="撤销授权" invisible="revoked_at" confirm="撤销后，此客户端须重新获得员工授权。"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_config" model="ir.actions.act_window">
+        <field name="name">飞书与 OAuth</field>
+        <field name="res_model">mcp.feishu.config</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="config_main"/>
+        <field name="path">mcp-feishu-settings</field>
+    </record>
+</odoo>

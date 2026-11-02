@@ -1,0 +1,4 @@
+id,name,model_id,group_id/id,operation,domain
+access_mcp_feishu_config_admin,System administrators configure Feishu OAuth,mcp.feishu.config,base.group_system,crud,
+access_mcp_feishu_binding_admin,System administrators manage employee identities,mcp.feishu.binding,base.group_system,crud,
+access_mcp_feishu_trial_admin,System administrators test Feishu login,mcp.feishu.trial,base.group_system,crud,

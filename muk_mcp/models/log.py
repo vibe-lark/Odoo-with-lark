@@ -8,6 +8,7 @@ from odoo import SUPERUSER_ID, api, fields, models, tools
 from odoo.http import request
 from odoo.modules.registry import Registry
 from odoo.tools.misc import mute_logger
+from odoo.addons.muk_mcp.tools.auth import get_mcp_principal
 
 
 class MCPLog(models.Model):
@@ -38,6 +39,13 @@ class MCPLog(models.Model):
         string='Key Prefix',
         readonly=True,
         help='First characters of the API key used.',
+    )
+
+    auth_type = fields.Selection(
+        [('api_key', 'API Key'), ('oauth', 'OAuth 2.1')],
+        string='Authentication',
+        readonly=True,
+        index=True,
     )
 
     user_id = fields.Many2one(
@@ -135,8 +143,9 @@ class MCPLog(models.Model):
         if not request:
             return {}
         values = {'ip_address': request.httprequest.remote_addr}
-        if key := getattr(request, '_mcp_key', None):
-            values.update(key_name=key.name, key_prefix=key.key_prefix)
+        if principal := get_mcp_principal():
+            values.update(key_name=principal.name, key_prefix=principal.key_prefix)
+            values.update(principal._mcp_log_values())
         return values
 
     # ----------------------------------------------------------

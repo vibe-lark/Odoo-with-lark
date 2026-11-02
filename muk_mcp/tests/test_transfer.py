@@ -111,6 +111,20 @@ class TestMcpTransfer(MCPHttpCase):
             base64.b64decode(inline['content_base64']),
         )
 
+    def test_http_file_link_is_revoked_with_its_api_key(self):
+        """Revocation must cover a previously authorized file, not just RPCs."""
+        result = self.mcp_tool('authorize_download', {
+            'uri': f'odoo://record/res.partner/{self.partner.id}/image_1920',
+        })
+        link = json.loads(result['content'][0]['text'])
+        transfer = self.env['muk_mcp.transfer'].search([
+            ('key_id', '=', self.mcp_key.id),
+        ], limit=1)
+        self.assertTrue(transfer)
+        self.mcp_key.active = False
+        self.assertEqual(self.send(link['download_url']).status_code, 404)
+        self.assertFalse(transfer.used)
+
     def test_an_upload_that_breaks_its_announcement_or_expired_is_refused(self):
         for announced, status in (
             ({'size': len(PDF) + 1}, 400),

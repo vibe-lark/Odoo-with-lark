@@ -11,6 +11,7 @@ from odoo.sql_db import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 from odoo.tools import config
 
 from odoo.addons.muk_mcp.tools import common, protocol, version
+from odoo.addons.muk_mcp.tools.auth import get_mcp_principal
 from odoo.addons.muk_mcp.tools.exception import (
     MCPResourceNotFound,
 )
@@ -25,7 +26,7 @@ class MCPController(http.Controller):
 
     def _get_request_rate_limiter(self) -> models.BaseModel | None:
         """Return the rate-limiter record bound to the request, if any."""
-        return getattr(request, '_mcp_key', None)
+        return get_mcp_principal()
 
     def _check_rate_limit(self) -> bool:
         """Reject and log the request when its rate-limiter is over its limit."""
@@ -44,8 +45,12 @@ class MCPController(http.Controller):
 
     def _get_tool_enforce_scope(self) -> str | None:
         """Return the scope to enforce on tool calls, derived from the API key."""
-        key = getattr(request, '_mcp_key', None)
-        return key.scope if key else None
+        principal = get_mcp_principal()
+        return principal.scope if principal else None
+
+    def _get_authorization_error(self, data: dict[str, Any]) -> Response | None:
+        """Allow auth providers to return transport-level scope challenges."""
+        return None
 
     def _check_origin(self) -> bool:
         """Report whether a browser request's ``Origin`` is allowed.
@@ -478,6 +483,9 @@ class MCPController(http.Controller):
         data, error = protocol.parse_jsonrpc_request(raw_body)
         if error is not None:
             return request.make_json_response(error, status=400)
+        authorization_error = self._get_authorization_error(data)
+        if authorization_error is not None:
+            return authorization_error
         if 'id' not in data:
             return Response(status=202)
         response_data, protocol_version = self._dispatch_method(data)

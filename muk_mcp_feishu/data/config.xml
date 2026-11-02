@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="config_main" model="mcp.feishu.config">
+        <field name="name">飞书与 OAuth</field>
+    </record>
+</odoo>

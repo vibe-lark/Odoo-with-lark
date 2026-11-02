@@ -1,0 +1,132 @@
+.o_mcp_feishu_config {
+    .o_form_statusbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .o_mcp_setup_steps {
+        display: inline-flex;
+        align-items: stretch;
+        min-width: 0;
+        max-width: 100%;
+        isolation: isolate;
+
+        .o_mcp_setup_step {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 8px 25px 8px 27px;
+            border: 0;
+            border-radius: 0;
+            background: $o-brand-primary;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.2;
+            white-space: nowrap;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%);
+
+            + .o_mcp_setup_step {
+                margin-inline-start: -9px;
+            }
+
+            &.o_mcp_setup_step_first {
+                padding-inline-start: 14px;
+                border-radius: 6px 0 0 6px;
+                clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+            }
+
+            &:has(.o_mcp_setup_complete) {
+                background: mix($o-brand-primary, white, 12%);
+                color: $o-brand-primary;
+            }
+
+            &.o_mcp_setup_pending {
+                background: $o-gray-200;
+                color: $o-gray-600;
+            }
+
+            &:is(button):hover {
+                filter: brightness(0.96);
+            }
+
+            &:is(button):focus-visible {
+                outline: none;
+                box-shadow: inset 0 0 0 3px $o-gray-800, inset 0 0 0 5px white;
+            }
+        }
+
+        .o_mcp_setup_number {
+            display: inline-flex;
+            flex: 0 0 22px;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .o_mcp_setup_complete {
+            font-size: 14px;
+            line-height: 1;
+        }
+    }
+
+    .o_mcp_setup_hint {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 6px;
+        background: mix($o-brand-primary, white, 8%);
+        color: $o-gray-700;
+
+        .o_mcp_setup_info {
+            flex: 0 0 14px;
+            width: 14px;
+            height: 14px;
+            margin-top: 3px;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            color: $o-brand-primary;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 12px;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .o_statusbar_buttons {
+            width: 100%;
+        }
+
+        .o_mcp_setup_steps {
+            flex-direction: column;
+            width: 100%;
+
+            .o_mcp_setup_step,
+            .o_mcp_setup_step.o_mcp_setup_step_first {
+                min-height: 48px;
+                padding: 13px 16px 18px;
+                border-radius: 0;
+                clip-path: polygon(0 0, 50% 9px, 100% 0, 100% calc(100% - 9px), 50% 100%, 0 calc(100% - 9px));
+
+                + .o_mcp_setup_step {
+                    margin-inline-start: 0;
+                    margin-top: -6px;
+                }
+            }
+
+            .o_mcp_setup_step.o_mcp_setup_step_first {
+                border-radius: 6px 6px 0 0;
+                clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), 50% 100%, 0 calc(100% - 9px));
+            }
+        }
+    }
+}

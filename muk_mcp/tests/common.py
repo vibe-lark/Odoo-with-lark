@@ -24,6 +24,10 @@ def make_mcp_key(
     rate_limit: int = 0,
 ) -> tuple[str, models.BaseModel]:
     """Generate a key owned by ``user`` and return its plaintext and record."""
+    # OAuth installations require an administrator to enable each employee.
+    # Fixture provisioning is explicit, just like the production setup flow.
+    if 'mcp_oauth_enabled' in user._fields:
+        user.sudo().write({'mcp_oauth_enabled': True, 'mcp_oauth_scope': scope})
     record, token = (
         user.env['muk_mcp.key']
         .with_user(user)

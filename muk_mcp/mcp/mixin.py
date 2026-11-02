@@ -7,10 +7,10 @@ from typing import Any
 
 from odoo import api, models
 from odoo.exceptions import AccessError, UserError
-from odoo.http import request
 from odoo.tools import BinaryBytes
 
 from odoo.addons.muk_mcp.tools.content import make_resource_entry, normalize_mimetype
+from odoo.addons.muk_mcp.tools.auth import get_mcp_principal
 from odoo.addons.muk_mcp.tools.parser import normalize_ids
 from odoo.addons.muk_mcp.tools.uri import parse_uri
 
@@ -74,7 +74,7 @@ class MCPMixin(models.AbstractModel):
         Odoo get the file inline and keep it themselves.
         """
         result = {'filename': filename, 'mimetype': mimetype}
-        if delivery != 'link' or not (request and getattr(request, '_mcp_key', None)):
+        if delivery != 'link' or not get_mcp_principal():
             return {**result, 'content_base64': base64.b64encode(content).decode()}
         attachment = self.env['ir.attachment'].create(
             {'name': filename, 'raw': BinaryBytes(content, filename=filename)}

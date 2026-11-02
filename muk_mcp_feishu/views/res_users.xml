@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_users_mcp_access" model="ir.ui.view">
+        <field name="name">res.users.mcp.oauth.access</field><field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="MCP 访问" name="mcp_oauth_access" groups="base.group_system">
+                    <group><field name="mcp_oauth_enabled" string="允许使用 MCP"/><field name="mcp_oauth_scope" string="最大授权范围"/><field name="mcp_oauth_rate_limit" string="每分钟请求限额"/></group>
+                    <p class="text-muted">开通后，员工使用飞书登录并确认授权；业务操作继续受其 Odoo 权限与模型访问规则限制。</p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_users_my_mcp_authorizations" model="ir.ui.view">
+        <field name="name">res.users.my.mcp.authorizations</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='api_keys']" position="after">
+                <div class="d-md-flex mt-3" invisible="id != uid" groups="base.group_user">
+                    <div class="col-md-6 col-lg-3"><span class="o_form_label">MCP 授权</span></div>
+                    <div class="w-md-50 w-lg-75"><button name="%(muk_mcp_oauth21.action_my_oauth_grants)d" type="action" string="管理我授权的客户端" class="btn-secondary"/><p class="text-muted mt-2">查看豆包、Codex 等客户端的授权，或取消其中一次授权。</p></div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

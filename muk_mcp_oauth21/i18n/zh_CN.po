@@ -1,0 +1,118 @@
+# Translation of MCP OAuth 2.1 for Odoo 20.
+msgid ""
+msgstr ""
+"Project-Id-Version: MCP OAuth 2.1 20.0\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: muk_mcp_oauth21
+#: model:ir.actions.act_window,name:muk_mcp_oauth21.action_oauth_clients
+#: model:ir.ui.menu,name:muk_mcp_oauth21.menu_oauth_clients
+msgid "OAuth Clients"
+msgstr "OAuth 客户端"
+
+#. module: muk_mcp_oauth21
+#: model:ir.actions.act_window,name:muk_mcp_oauth21.action_oauth_grants
+#: model:ir.ui.menu,name:muk_mcp_oauth21.menu_oauth_grants
+msgid "OAuth Authorizations"
+msgstr "OAuth 授权记录"
+
+#. module: muk_mcp_oauth21
+#: model:ir.actions.act_window,name:muk_mcp_oauth21.action_my_oauth_grants
+msgid "My Authorized Applications"
+msgstr "我授权的应用"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__user_id
+msgid "User"
+msgstr "员工"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__client_id
+msgid "Client"
+msgstr "客户端"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__scope
+msgid "Scope"
+msgstr "授权范围"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__resource
+msgid "Resource"
+msgstr "目标资源"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__expires_at
+msgid "Expires At"
+msgstr "到期时间"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__revoked_at
+msgid "Revoked At"
+msgstr "撤销时间"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_mcp_oauth_grant__last_used
+msgid "Last Used"
+msgstr "最近使用"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_res_users__mcp_oauth_enabled
+msgid "Allow MCP"
+msgstr "允许使用 MCP"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_res_users__mcp_oauth_scope
+msgid "Maximum MCP Scope"
+msgstr "最大 MCP 授权范围"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields,field_description:muk_mcp_oauth21.field_res_users__mcp_oauth_rate_limit
+msgid "MCP Requests per Minute"
+msgstr "MCP 每分钟请求限额"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields.selection,name:muk_mcp_oauth21.selection__mcp_oauth_grant__scope__read
+#: model:ir.model.fields.selection,name:muk_mcp_oauth21.selection__res_users__mcp_oauth_scope__read
+msgid "Read Only"
+msgstr "只读"
+
+#. module: muk_mcp_oauth21
+#: model:ir.model.fields.selection,name:muk_mcp_oauth21.selection__mcp_oauth_grant__scope__write
+#: model:ir.model.fields.selection,name:muk_mcp_oauth21.selection__res_users__mcp_oauth_scope__write
+msgid "Read & Write"
+msgstr "读取与写入"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_grant_list
+msgid "Revoke"
+msgstr "撤销"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_grant_form
+msgid "Revoke Authorization"
+msgstr "撤销授权"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_client_form
+msgid "Generate / Rotate Client Secret"
+msgstr "生成或更新客户端密钥"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_client_form
+msgid "Public clients use PKCE without a client secret. Generate a secret for confidential clients. Rotating a secret revokes this client's existing authorizations."
+msgstr "公共客户端使用 PKCE，无需客户端密钥。机密客户端需要生成密钥；更新密钥会撤销该客户端的现有授权。"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_client_secret_show
+msgid "This secret is displayed once. Store it in the OAuth client's private configuration."
+msgstr "密钥仅显示一次，请保存在 OAuth 客户端的私有配置中。"
+
+#. module: muk_mcp_oauth21
+#: model_terms:ir.ui.view,arch_db:muk_mcp_oauth21.view_oauth_client_secret_show
+msgid "Close"
+msgstr "关闭"

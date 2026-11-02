@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_binding_list" model="ir.ui.view">
+        <field name="name">mcp.feishu.binding.list</field>
+        <field name="model">mcp.feishu.binding</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="name"/><field name="email_normalized"/><field name="odoo_user_id"/>
+                <field name="pending_email" string="最近登录邮箱" optional="show"/>
+                <field name="status" widget="badge"/>
+                <field name="state" column_invisible="1"/>
+                <field name="conflict_reason"/>
+                <button name="action_enable" type="object" string="启用" invisible="status == 'enabled'"/>
+                <button name="action_disable" type="object" string="停用" invisible="state == 'blocked'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_binding_form" model="ir.ui.view">
+        <field name="name">mcp.feishu.binding.form</field>
+        <field name="model">mcp.feishu.binding</field>
+        <field name="arch" type="xml">
+            <form string="员工身份绑定" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_enable" type="object" string="启用" class="btn-primary" invisible="status == 'enabled'"/>
+                    <button name="action_disable" type="object" string="停用" invisible="state == 'blocked'"/>
+                    <field name="status" widget="badge" readonly="1"/>
+                    <field name="state" invisible="1"/>
+                </header>
+                <sheet>
+                    <p class="text-muted">邮箱唯一匹配时自动关联 Odoo 账号，已关联的用户不会自动更换。停用后须显式启用；未知或重复邮箱需先修正账号数据。</p>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="email_normalized" readonly="1"/>
+                            <field name="pending_email" string="最近登录邮箱" readonly="1"/>
+                            <field name="odoo_user_id" readonly="1"/>
+                            <field name="conflict_reason" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="app_id" readonly="1"/>
+                            <field name="open_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_bindings" model="ir.actions.act_window">
+        <field name="name">用户绑定</field><field name="res_model">mcp.feishu.binding</field><field name="view_mode">list,form</field><field name="path">mcp-feishu-bindings</field>
+    </record>
+</odoo>

@@ -22,6 +22,15 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
+# Local connections, development certificates and OAuth encryption keys
+.local/
+.env
+.env.*
+!.env.example
+certs/
+*.key
+*.pem
+
 # Tooling
 **/.gitignore
 !/.gitignore
@@ -45,3 +54,8 @@ Thumbs.db
 !/.editorconfig
 **/.gitattributes
 !/.gitattributes
+
+# Environment-specific deployment notes and helpers
+/README.devbox.md
+/mcp_devbox.py
+/deploy/

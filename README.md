@@ -1,4 +1,20 @@
-# MuK Odoo Modules
+# Odoo with Lark / Feishu SSO
+
+为 Odoo Community 20 的 MuK MCP 服务增加 MCP OAuth 2.1 和飞书自建应用 SSO。员工用自己的飞书身份登录，按邮箱自动关联现有 Odoo 内部账号，无需手动生成 MCP Key。
+
+- MCP OAuth 发现、客户端注册、S256 PKCE、令牌自动刷新与撤销。
+- 管理员在 Odoo「设置 → MCP → 飞书与 OAuth」集中配置应用。
+- 员工权限沿用 Odoo ACL、记录规则、MCP 模型白名单和授权范围。
+- 身份自动绑定，支持管理员启用/停用；兼容已有 API Key。
+- 通过 Odoo 扩展模块实现，无需修改 Odoo 核心源码。
+
+**[安装、配置和开发说明](README.oauth-feishu.md)** · [OAuth 模块](muk_mcp_oauth21) · [飞书 SSO 模块](muk_mcp_feishu)
+
+本仓库 fork 自 [MuK IT / odoo-modules](https://github.com/muk-it/odoo-modules)，保留上游提交历史、作者声明和 LGPL-3 许可证。本次集成基于上游 `20.0` 分支的 `2e7c56034085a24e6293a90a10d404897e4245d7`。下方保留上游项目说明。
+
+---
+
+## MuK Odoo Modules
 
 [![License LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)](LICENSE)
 [![Odoo 20.0](https://img.shields.io/badge/Odoo-20.0-714B67?style=flat-square)](https://github.com/muk-it/odoo-modules/tree/20.0)

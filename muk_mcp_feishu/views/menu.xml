@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_feishu_config" name="飞书与 OAuth" parent="muk_mcp.menu_mcp_root" action="action_config" sequence="1" groups="base.group_system"/>
+    <menuitem id="menu_feishu_bindings" name="用户绑定" parent="muk_mcp.menu_mcp_authentication" action="action_bindings" sequence="5" groups="base.group_system"/>
+</odoo>

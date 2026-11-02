@@ -113,7 +113,7 @@ class Connect(models.TransientModel):
             record.codex_toml = (
                 '[mcp_servers.odoo]\n'
                 f'url = "{record.mcp_url}"\n'
-                f'headers.Authorization = "Bearer {key}"\n'
+                f'http_headers.Authorization = "Bearer {key}"\n'
             )
             record.cursor_json = json.dumps(
                 {

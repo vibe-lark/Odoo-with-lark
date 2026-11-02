@@ -11,6 +11,7 @@
 				<field name="tool_name"/>
 				<field name="model_name"/>
 				<field name="user_id"/>
+				<field name="auth_type"/>
 				<filter name="ok" string="OK" domain="[('status', '=', 'ok')]"/>
 				<filter name="errors" string="Errors" domain="[('status', '=', 'error')]"/>
 				<filter name="denied" string="Denied" domain="[('status', '=', 'denied')]"/>
@@ -33,6 +34,7 @@
 				<field name="key_name"/>
 				<field name="key_prefix" optional="hide"/>
 				<field name="user_id"/>
+					<field name="auth_type" optional="hide"/>
 				<field name="method"/>
 				<field name="tool_name"/>
 				<field name="model_name"/>
@@ -99,6 +101,7 @@
 						<group>
 							<field name="create_date"/>
 							<field name="user_id"/>
+							<field name="auth_type"/>
 							<field name="key_name"/>
 							<field name="key_prefix"/>
 							<field name="duration_ms"/>

@@ -114,6 +114,20 @@ class MCPKey(models.Model):
         """
         return rate_limiter.check((self.env.cr.dbname, self.id), self.rate_limit, 60)
 
+    def _mcp_is_active(self) -> bool:
+        """Credential hook also checked when redeeming a linked file."""
+        self.ensure_one()
+        return bool(self.exists() and self.active and self.user_id.active)
+
+    def _mcp_transfer_values(self) -> dict:
+        """Bind issued file links to the originating, revocable API key."""
+        self.ensure_one()
+        return {'key_id': self.id}
+
+    def _mcp_log_values(self) -> dict:
+        """Provider-neutral audit metadata, excluding credential material."""
+        return {'auth_type': 'api_key'}
+
     @api.model
     def _authenticate_domain(self) -> Domain:
         """Return the domain an authenticating key's owner must satisfy.

@@ -37,6 +37,7 @@ class IrHttp(models.AbstractModel):
             return None
         request.update_env(user=key.user_id.id)
         request._mcp_key = key
+        request._mcp_principal = key
         return key.name
 
     @classmethod
@@ -65,6 +66,11 @@ class IrHttp(models.AbstractModel):
     @classmethod
     def _pre_dispatch(cls, rule: Rule, args: dict[str, Any]) -> None:
         """Allow the MCP transport headers on the endpoint's CORS preflight."""
+        if request.httprequest.path == MCP_ENDPOINT:
+            request.future_response.headers.set(
+                'Access-Control-Expose-Headers',
+                'WWW-Authenticate, MCP-Protocol-Version, Mcp-Session-Id, Retry-After',
+            )
         try:
             super()._pre_dispatch(rule, args)
         except HTTPException:
@@ -72,5 +78,9 @@ class IrHttp(models.AbstractModel):
                 request.future_response.headers.set(
                     'Access-Control-Allow-Headers',
                     MCP_CORS_REQUEST_HEADERS,
+                )
+                request.future_response.headers.set(
+                    'Access-Control-Allow-Methods',
+                    'POST, OPTIONS',
                 )
             raise

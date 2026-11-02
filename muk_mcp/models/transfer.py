@@ -4,13 +4,16 @@ import hashlib
 import secrets
 from datetime import timedelta
 from typing import Any
+from urllib.parse import urlsplit
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.http import Response, request
 from odoo.tools import BinaryBytes
+from odoo.tools import SQL
 
 from odoo.addons.muk_mcp.tools.common import TRANSFER_MINUTES, TRANSFER_PATH
+from odoo.addons.muk_mcp.tools.auth import get_mcp_principal
 
 
 class MCPTransfer(models.Model):
@@ -50,6 +53,14 @@ class MCPTransfer(models.Model):
         help='The API key the link was issued to.',
     )
 
+    key_id = fields.Many2one(
+        comodel_name='muk_mcp.key',
+        string='API Key',
+        index=True,
+        ondelete='cascade',
+        help='Credential which authorized this link; revocation disables the link.',
+    )
+
     user_id = fields.Many2one(
         comodel_name='res.users',
         string='User',
@@ -85,11 +96,25 @@ class MCPTransfer(models.Model):
 
     used = fields.Boolean(
         string='Used',
+        default=False,
     )
 
     # ----------------------------------------------------------
     # Helper
     # ----------------------------------------------------------
+
+    @api.model
+    def _get_transfer_base_url(self) -> str:
+        """Use a dedicated HTTPS origin when MCP has its own TLS entry point."""
+        public_url = self.env['ir.config_parameter'].sudo().get_str('muk_mcp.public_url')
+        if public_url:
+            parsed = urlsplit(public_url)
+            if (parsed.scheme != 'https' or not parsed.hostname or parsed.username
+                    or parsed.password or parsed.path not in ('', '/')
+                    or parsed.query or parsed.fragment):
+                raise UserError(self.env._('The MCP public URL must be an HTTPS origin.'))
+            return public_url.rstrip('/')
+        return self.get_base_url().rstrip('/')
 
     def _receive(self, data: bytes) -> dict[str, Any]:
         """Fill the upload's attachment with ``data``, as the link's user.
@@ -137,6 +162,11 @@ class MCPTransfer(models.Model):
             )
         )
 
+    def _check_credential(self) -> bool:
+        """Auth-provider extension point for grant and user revocation."""
+        self.ensure_one()
+        return bool(self.user_id.active and (not self.key_id or self.key_id._mcp_is_active()))
+
     # ----------------------------------------------------------
     # Functions
     # ----------------------------------------------------------
@@ -145,19 +175,21 @@ class MCPTransfer(models.Model):
     def _issue(self, operation: str, **values: Any) -> tuple[models.Model, str]:
         """Create a link for the current user and return it with its URL."""
         token = secrets.token_urlsafe(32)
-        key = getattr(request, '_mcp_key', None) if request else None
+        principal = get_mcp_principal()
+        credential_values = principal._mcp_transfer_values() if principal else {}
         transfer = self.sudo().create(
             {
                 **values,
+                **credential_values,
                 'operation': operation,
                 'token_hash': self.env['muk_mcp.key']._hash_key(token),
                 'user_id': self.env.uid,
-                'key_name': key.name if key else False,
+                'key_name': principal.name if principal else False,
                 'expires_at': fields.Datetime.now()
                 + timedelta(minutes=TRANSFER_MINUTES),
             },
         )
-        return transfer, f'{self.get_base_url()}{TRANSFER_PATH}/{token}'
+        return transfer, f'{self._get_transfer_base_url()}{TRANSFER_PATH}/{token}'
 
     @api.model
     def _redeem(self, token: str, operation: str) -> models.Model:
@@ -172,7 +204,17 @@ class MCPTransfer(models.Model):
             ],
             limit=1,
         )
-        transfer.used = True
+        if not transfer or not transfer._check_credential():
+            return self.browse()
+        # A link can be consumed by only one request, including across workers.
+        transfer.flush_recordset(['used'])
+        self.env.cr.execute(SQL(
+            'UPDATE %s SET used = TRUE WHERE id = %s AND used IS NOT TRUE RETURNING id',
+            SQL.identifier(self._table), transfer.id,
+        ))
+        if not self.env.cr.fetchone():
+            return self.browse()
+        transfer.invalidate_recordset(['used'])
         return transfer
 
     # ----------------------------------------------------------

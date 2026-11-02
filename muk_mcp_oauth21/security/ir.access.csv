@@ -1,0 +1,11 @@
+id,name,model_id,group_id/id,operation,domain
+access_mcp_oauth_client_admin,System administrators manage OAuth clients,mcp.oauth.client,base.group_system,crud,
+access_mcp_oauth_client_user,Employees read their connected OAuth clients,mcp.oauth.client,base.group_user,r,"[('grant_ids.user_id', '=', user.id)]"
+access_mcp_oauth_flow_admin,System administrators inspect OAuth flows,mcp.oauth.flow,base.group_system,rd,
+access_mcp_oauth_grant_admin,System administrators manage OAuth grants,mcp.oauth.grant,base.group_system,rud,
+access_mcp_oauth_grant_user,Employees read their OAuth grants,mcp.oauth.grant,base.group_user,r,"[('user_id', '=', user.id)]"
+access_mcp_oauth_code_admin,System administrators inspect OAuth codes,mcp.oauth.code,base.group_system,rd,
+access_mcp_oauth_token_admin,System administrators inspect OAuth tokens,mcp.oauth.token,base.group_system,rd,
+access_mcp_oauth_rate_admin,System administrators inspect rate limits,mcp.oauth.rate,base.group_system,rd,
+access_mcp_oauth_endpoint_rate_admin,System administrators inspect endpoint rate limits,mcp.oauth.endpoint.rate,base.group_system,rd,
+access_mcp_oauth_client_secret_admin,System administrators view new client secrets,mcp.oauth.client.secret.show,base.group_system,crd,

@@ -21,6 +21,8 @@ class TestMcpKey(TransactionCase):
         super().setUpClass()
         cls.key_model = cls.env['muk_mcp.key']
         cls.owner = new_test_user(cls.env, login='mcp_key_owner')
+        if 'mcp_oauth_enabled' in cls.owner._fields:
+            cls.owner.sudo().write({'mcp_oauth_enabled': True, 'mcp_oauth_scope': 'write'})
         cls.env['ir.config_parameter'].set_int('muk_mcp.rate_limit_requests', 17)
         cls.env['ir.config_parameter'].set_str('web.base.url', 'https://odoo.example/')
 

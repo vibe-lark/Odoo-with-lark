@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_settings_feishu_oauth" model="ir.ui.view">
+        <field name="name">res.config.settings.feishu.oauth</field><field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="muk_mcp.view_res_config_settings_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='mcp_module_oauth']" position="replace">
+                <setting id="mcp_feishu_oauth" string="飞书与 OAuth" help="通过企业自建应用登录，员工无需手动配置 MCP Key。" groups="base.group_system">
+                    <button name="%(action_config)d" type="action" string="管理飞书应用与员工授权" class="btn-link"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
